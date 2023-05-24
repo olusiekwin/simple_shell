@@ -18,7 +18,7 @@ if (n == -1)
 {
 if (feof(stdin))
 {
-return NULL;
+return (NULL);
 }
 else
 {
@@ -27,5 +27,5 @@ exit(EXIT_FAILURE);
 }
 }
 
-return line;
+return (line);
 }
