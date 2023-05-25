@@ -5,9 +5,8 @@
 * @command: Command string
 * @exit_code: Pointer to the exit code variable
 *
-* Description: Handles various builtins like exit,cd,setenv&unsetenv.
+* Description: Handles various builtins like exit, cd, setenv, and unsetenv.
 */
-
 void handle_builtin_commands(char *command, int *exit_code)
 {
 if (strncmp(command, "exit", 4) == 0)
@@ -25,6 +24,10 @@ handle_setenv_command(command);
 else if (strncmp(command, "unsetenv", 8) == 0)
 {
 handle_unsetenv_command(command);
+}
+else
+{
+execute_command(command);
 }
 }
 
