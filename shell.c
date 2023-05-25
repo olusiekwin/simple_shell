@@ -12,6 +12,7 @@ int exit_code = 0;
 
 while (1)
 {
+if (isatty(STDIN_FILENO))
 printf("\033[1;32mGraham@~$ \033[0m");
 fflush(stdout);
 
