@@ -25,10 +25,6 @@ else if (strncmp(command, "unsetenv", 8) == 0)
 {
 handle_unsetenv_command(command);
 }
-else
-{
-execute_command(command);
-}
 }
 
 /**
@@ -36,37 +32,56 @@ execute_command(command);
 * @command: Command string
 * @exit_code: Pointer to the exit code variable
 *
-* Description: Sets the exit code to 1 to exit the shell.
+* Description: Sets the exit code to the specified value or 0 if no value is
+*              provided. Exits the shell with the given exit code.
 */
 void handle_exit_command(char *command, int *exit_code)
 {
-if (strcmp(command, "exit") == 0)
+char *arg = strtok(command, " \t\n");
+
+if (arg != NULL)
 {
-*exit_code = 1;
+arg = strtok(NULL, " \t\n");
+if (arg != NULL)
+*exit_code = atoi(arg);
 }
+
+printf("\n");
+exit(*exit_code);
 }
 
 /**
 * handle_cd_command - Handles the cd command
 * @command: Command string
 *
-* Description: Changes the current working directory.
+* Description: Changes the current working directory to the specified path.
+*              If no path is provided, changes the dir to the home dir.
 */
 void handle_cd_command(char *command)
 {
-char *dir = strtok(command, " ");
-dir = strtok(NULL, " ");
+char *arg = strtok(command, " \t\n");
 
-if (dir != NULL)
+if (arg != NULL)
 {
-if (chdir(dir) != 0)
+arg = strtok(NULL, " \t\n");
+if (arg != NULL)
 {
-perror("\033[1;31mchdir\033[0m");
+if (chdir(arg) == -1)
+{
+perror("cd");
 }
 }
 else
 {
-printf("\033[1;31mInvalid argument for cd\033[0m\n");
+const char *home_dir = getenv("HOME");
+if (home_dir != NULL)
+{
+if (chdir(home_dir) == -1)
+{
+perror("cd");
+}
+}
+}
 }
 }
 
@@ -74,24 +89,27 @@ printf("\033[1;31mInvalid argument for cd\033[0m\n");
 * handle_setenv_command - Handles the setenv command
 * @command: Command string
 *
-* Description: Sets the value of an environment variable.
+* Description: Sets the environment variable to the specified value. If the
+*              variable does not exist, it is created.
 */
-void handle_setenv_command(__attribute__((unused)) char *command)
+void handle_setenv_command(char *command)
 {
-char *name, *value;
-name = strtok(NULL, " ");
-value = strtok(NULL, " ");
+char *arg = strtok(command, " \t\n");
 
-if (name != NULL && value != NULL)
+if (arg != NULL)
 {
-if (setenv(name, value, 1) != 0)
+arg = strtok(NULL, " \t\n");
+if (arg != NULL)
 {
-perror("\033[1;31msetenv\033[0m");
+char *value = strtok(NULL, " \t\n");
+if (value != NULL)
+{
+if (setenv(arg, value, 1) == -1)
+{
+perror("setenv");
 }
 }
-else
-{
-printf("\033[1;31mInvalid arguments for setenv\033[0m\n");
+}
 }
 }
 
@@ -99,21 +117,21 @@ printf("\033[1;31mInvalid arguments for setenv\033[0m\n");
 * handle_unsetenv_command - Handles the unsetenv command
 * @command: Command string
 *
-* Description: Unsets an environment variable.
+* Description: Unsets the specified environment variable.
 */
-void handle_unsetenv_command(__attribute__((unused)) char *command)
+void handle_unsetenv_command(char *command)
 {
-char *name = strtok(NULL, " ");
+char *arg = strtok(command, " \t\n");
 
-if (name != NULL)
+if (arg != NULL)
 {
-if (unsetenv(name) != 0)
+arg = strtok(NULL, " \t\n");
+if (arg != NULL)
 {
-perror("\033[1;31munsetenv\033[0m");
+if (unsetenv(arg) == -1)
+{
+perror("unsetenv");
 }
 }
-else
-{
-printf("\033[1;31mInvalid argument for unsetenv\033[0m\n");
 }
 }
