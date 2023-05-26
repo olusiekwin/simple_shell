@@ -17,5 +17,7 @@ void handle_exit_command(char *command, int *exit_code);
 void handle_cd_command(char *command);
 void handle_setenv_command(char *command);
 void handle_unsetenv_command(char *command);
+void execute_command_and_print_output(char **args);
+void handle_ls_command(void);
 
 #endif /* SHELL_H */

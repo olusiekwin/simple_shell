@@ -22,6 +22,29 @@ return;
 }
 else if (child_pid == 0)
 {
+execute_command_and_print_output(args);
+}
+else
+{
+int status;
+waitpid(child_pid, &status, 0);
+
+if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+{
+fprintf(stderr, "Command exited with status %d\n", WEXITSTATUS(status));
+}
+}
+}
+
+/**
+* execute_command_and_print_output - Executes the command using execve and prints the output
+* @args: Command arguments
+*
+* Description: Executes the command using execve and redirects the output
+*              to the parent process for printing.
+*/
+void execute_command_and_print_output(char **args)
+{
 int pipefd[2];
 if (pipe(pipefd) == -1)
 {
@@ -36,16 +59,5 @@ if (execve(args[0], args, NULL) == -1)
 {
 perror("\033[1;31mexecve\033[0m");
 exit(1);
-}
-}
-else
-{
-int status;
-waitpid(child_pid, &status, 0);
-
-if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-{
-fprintf(stderr, "Command exited with status %d\n", WEXITSTATUS(status));
-}
 }
 }
