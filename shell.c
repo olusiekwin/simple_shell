@@ -36,5 +36,5 @@ execute_command(command);
 free(command);
 }
 
-return exit_code;
+return (exit_code);
 }

@@ -10,7 +10,8 @@ handle_builtin_commands(command, NULL);
 }
 
 /**
-* execute_command_and_print_output - Executes the given command and prints its output
+* execute_command_and_print_output - Executes the given command and
+* prints its output
 * @args: The command arguments
 */
 void execute_command_and_print_output(char **args)
