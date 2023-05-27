@@ -1,63 +1,38 @@
 #include "shell.h"
 
 /**
-* execute_command - Executes the command using execve
-* @command: Command string
-*
-* Description: Splits the command into arguments and executes it using execve.
+* execute_command - Executes the given command
+* @command: The command to execute
 */
 void execute_command(char *command)
 {
-pid_t child_pid;
-char *args[] = {"/bin/sh", "-c", NULL, NULL};
-
-args[2] = command;
-
-child_pid = fork();
-
-if (child_pid == -1)
-{
-perror("\033[1;31mfork\033[0m");
-return;
-}
-else if (child_pid == 0)
-{
-execute_command_and_print_output(args);
-}
-else
-{
-int status;
-waitpid(child_pid, &status, 0);
-
-if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-{
-fprintf(stderr, "Command exited with status %d\n", WEXITSTATUS(status));
-}
-}
+handle_builtin_commands(command, NULL);
 }
 
 /**
-* execute_command_and_print_output - Executes the command using execve and prints the output
-* @args: Command arguments
-*
-* Description: Executes the command using execve and redirects the output
-*              to the parent process for printing.
+* execute_command_and_print_output - Executes the given command and prints its output
+* @args: The command arguments
 */
 void execute_command_and_print_output(char **args)
 {
-int pipefd[2];
-if (pipe(pipefd) == -1)
+pid_t pid;
+int status;
+
+pid = fork();
+
+if (pid == 0)
 {
-perror("\033[1;31mpipe\033[0m");
-exit(1);
+execvp(args[0], args);
+perror("execvp");
+exit(EXIT_FAILURE);
 }
-
-dup2(pipefd[0], STDIN_FILENO);
-close(pipefd[1]);
-
-if (execve(args[0], args, NULL) == -1)
+else if (pid < 0)
 {
-perror("\033[1;31mexecve\033[0m");
-exit(1);
+perror("fork");
+exit(EXIT_FAILURE);
+}
+else
+{
+wait(&status);
 }
 }
