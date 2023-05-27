@@ -23,8 +23,13 @@ pid = fork();
 
 if (pid == 0)
 {
+/* Redirect stderr to stdout */
+dup2(1, 2);
+
 execvp(args[0], args);
-perror("execvp");
+
+/* If execvp fails, print the error message */
+perror(args[0]);
 exit(EXIT_FAILURE);
 }
 else if (pid < 0)
