@@ -29,3 +29,14 @@ exit(EXIT_FAILURE);
 
 return (line);
 }
+
+/**
+* isatty - Check if a file descriptor refers to a terminal
+* @fd: The file descriptor to check
+*
+* Return: 1 if the file descriptor refers to a terminal, 0 otherwise
+*/
+int isatty(int fd)
+{
+return (ttyname(fd) != NULL);
+}
