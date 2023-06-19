@@ -1,37 +1,3 @@
-
-# Simple Shell
-
-Simple Shell is a basic Unix shell implementation written in C. It provides a simple command-line interface where users can enter commands and execute them. The shell supports both interactive mode, where commands are entered directly by the user, and batch mode, where commands are read from a file and executed.
-
-## Features
-
-- Command execution: Executes commands using the `execve` system call.
-- Built-in commands: Supports a few built-in commands like `exit` to exit the shell.
-- Batch mode: Reads commands from a file and executes them without prompting for input.
-- Prompt: Provides a command prompt in interactive mode for users to enter commands.
-- Input handling: Handles user input by reading commands and arguments.
-- Error handling: Displays appropriate error messages for failed system calls.
-
-## Getting Started
-
-To compile the Simple Shell program, run the following command:
-
-```
-gcc -g -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
-```
-
-To run the shell in interactive mode, simply execute the compiled binary:
-
-```
-./hsh
-```
-
-To run the shell in batch mode, provide a filename as a command-line argument:
-
-```
-./hsh [filename]Certainly! Here's a raw version of the README file content that you can paste directly into your `README.md` file:
-
-```
 # Simple Shell
 
 Simple Shell is a basic Unix shell implementation written in C. It provides a simple command-line interface where users can enter commands and execute them. The shell supports both interactive mode, where commands are entered directly by the user, and batch mode, where commands are read from a file and executed.
