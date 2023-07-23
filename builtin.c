@@ -23,16 +23,14 @@ else if (strncmp(command, "unsetenv", 8) == 0)
 {
 handle_unsetenv_command(command);
 }
+else if (strncmp(command, "env", 3) == 0)
+{
+print_environment();
+}
 else
 {
-char **args = malloc(4 * sizeof(char *));
-args[0] = "/bin/sh";
-args[1] = "-c";
-args[2] = command;
-args[3] = NULL;
-
-execute_command_and_print_output(args);
-
+char **args = split_command(command);
+execute_command_and_print_output(args, exit_code);
 free(args);
 }
 }
@@ -50,7 +48,13 @@ if (arg != NULL)
 {
 arg = strtok(NULL, " \t\n");
 if (arg != NULL)
-*exit_code = atoi(arg);
+{
+*exit_code = atoi(arg); /* Convert the argument to an integer */
+}
+else
+{
+*exit_code = 0; /* Default exit status is 0 if no argument is provided */
+}
 }
 
 exit(*exit_code);
@@ -132,5 +136,20 @@ if (arg != NULL)
 if (unsetenv(arg) == -1)
 perror("unsetenv");
 }
+}
+}
+
+/**
+* print_environment - Prints the current environment variables
+*/
+void print_environment(void)
+{
+extern char **environ;
+char **env = environ;
+
+while (*env)
+{
+printf("%s\n", *env);
+env++;
 }
 }

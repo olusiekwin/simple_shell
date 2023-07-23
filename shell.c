@@ -1,4 +1,5 @@
 #include "shell.h"
+
 /**
 * main - Entry point of the shell
 *
@@ -30,10 +31,11 @@ handle_builtin_commands(command, &exit_code);
 if (!exit_code)
 break;
 
-execute_command(command);
+execute_command(command, &exit_code);
 
 free(command);
 }
 
-return (exit_code);
+return exit_code;
 }
+ 

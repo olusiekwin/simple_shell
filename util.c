@@ -1,42 +1,103 @@
 #include "shell.h"
 
 /**
-* getline_custom - Reads a line of input from stdin
+* split_commands - Splits the input into multiple commands based on the delimiter
+* @input: The input string containing multiple commands
+* @delimiter: The delimiter to use for splitting the commands
 *
-* Return: Pointer to the line read (including newline character)
-*         or NULL if EOF is reached
+* Return: An array of strings containing the individual commands
 */
-char *getline_custom(void)
+char **split_commands(char *input, const char *delimiter)
 {
-char *line = NULL;
-size_t bufsize = 0;
-ssize_t n;
+int bufsize = 64;
+int position = 0;
+char **tokens = malloc(bufsize * sizeof(char *));
+char *token;
 
-n = getline(&line, &bufsize, stdin);
-
-if (n == -1)
+if (!tokens)
 {
-if (feof(stdin))
-{
-return (NULL);
+perror("malloc error");
+exit(EXIT_FAILURE);
 }
-else
+
+token = strtok(input, delimiter);
+while (token != NULL)
 {
-perror("getline");
+tokens[position] = token;
+position++;
+
+if (position >= bufsize)
+{
+bufsize += 64;
+tokens = realloc(tokens, bufsize * sizeof(char *));
+if (!tokens)
+{
+perror("realloc error");
 exit(EXIT_FAILURE);
 }
 }
 
-return (line);
+token = strtok(NULL, delimiter);
+}
+tokens[position] = NULL;
+return tokens;
 }
 
 /**
-* isatty - Check if a file descriptor refers to a terminal
-* @fd: The file descriptor to check
+* split_command - Splits the command into individual arguments
+* @command: The command to split
 *
-* Return: 1 if the file descriptor refers to a terminal, 0 otherwise
+* Return: An array of strings containing the individual arguments
 */
-int isatty(int fd)
+char **split_command(char *command)
 {
-return (ttyname(fd) != NULL);
+int bufsize = 64;
+int position = 0;
+char **tokens = malloc(bufsize * sizeof(char *));
+char *token;
+
+if (!tokens)
+{
+perror("malloc error");
+exit(EXIT_FAILURE);
+}
+
+token = strtok(command, " \t\n");
+while (token != NULL)
+{
+tokens[position] = token;
+position++;
+
+if (position >= bufsize)
+{
+bufsize += 64;
+tokens = realloc(tokens, bufsize * sizeof(char *));
+if (!tokens)
+{
+perror("realloc error");
+exit(EXIT_FAILURE);
+}
+}
+
+token = strtok(NULL, " \t\n");
+}
+tokens[position] = NULL;
+return tokens;
+}
+
+/**
+* is_builtin_command - Checks if a command is a built-in shell command
+* @command: The command to check
+*
+* Return: 1 if the command is built-in, 0 otherwise
+*/
+int is_builtin_command(char *command)
+{
+if (strcmp(command, "exit") == 0 || strcmp(command, "cd") == 0 ||
+strcmp(command, "setenv") == 0 || strcmp(command, "unsetenv") == 0 ||
+strcmp(command, "env") == 0)
+{
+return 1;
+}
+return 0;
 }
